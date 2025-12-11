@@ -53,6 +53,12 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
         )
     
     email = payload.get("sub")
+    if email is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Token inválido: no contiene email (sub)",
+            headers={"WWW-Authenticate": "Bearer"},)
+    
     socio_id = gym_service.email_socio_index.get(email)
     
     if not socio_id:
