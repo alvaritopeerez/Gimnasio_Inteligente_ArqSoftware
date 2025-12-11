@@ -5,6 +5,7 @@ from typing import List
 from passlib.context import CryptContext  # NUEVO
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")  # NUEVO
+fecha_nacimiento = "2005-03-15"
 
 
 class Usuario:
@@ -37,7 +38,10 @@ class Socio(Usuario):
             if fecha_obj > date.today():
                 raise ValueError("La fecha de nacimiento no puede ser futura.")
         except ValueError as e:
-            raise ValueError(f"Error en fecha de nacimiento: {e}")
+            if "Invalid isoformat" in str(e):
+                raise ValueError(f"Formato inválido. Usa YYYY-MM-DD: {fecha_nacimiento}")
+            else:
+                raise ValueError(f"Error en fecha de nacimiento: {e}")
 
         niveles_validos = ["principiante", "intermedio", "avanzado"]
         if nivel.lower() not in niveles_validos:

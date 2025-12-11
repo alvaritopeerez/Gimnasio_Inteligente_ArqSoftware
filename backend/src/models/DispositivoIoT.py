@@ -35,6 +35,9 @@ class DispositivoIoT:
                 "pulsaciones": random.randint(60, 120),
                 "pasos": random.randint(1000, 15000),
                 "calorias": round(random.uniform(50, 300), 2),
+                "peso_levantado": round(random.uniform(1.0, 5.0), 1),
+                "repeticiones": random.randint(1, 5),
+                "tiempo_ejercicio": random.randint(300, 1800),
                 "timestamp": datetime.now().isoformat()
             }
         elif self.tipo == "bascula":

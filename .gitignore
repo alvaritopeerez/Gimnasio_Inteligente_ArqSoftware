@@ -1,7 +1,13 @@
+# Archivos basura de Python (NO SUBIR)
 __pycache__/
 *.pyc
-.venv
+
+# Entornos virtuales (NO SUBIR)
+.venv/
 venv/
+env/
+
+# Archivos de sistema (NO SUBIR)
 .DS_Store
-DIAGRAMAS PROYECTO/
-*.png
+
+# --- IMPORTANTE: QUEREMOS SUBIR LOS DIAGRAMAS ---
