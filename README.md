@@ -97,7 +97,7 @@ PROYECTO_GIMNASIO/
     ├── Dockerfile
     ├── requirements.txt
     └── app.py                  # Aplicación Streamlit
-
+```
 ---
 ## Autor
 
