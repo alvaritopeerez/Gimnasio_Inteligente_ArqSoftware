@@ -160,27 +160,38 @@ def listar_entrenadores():
 def crear_clase(clase: ClaseCreate, current_user: Socio = Depends(get_current_user)):
     """Crea una nueva clase. Requiere autenticación."""
     try:
-        # Nota: En un sistema real verificaríamos si current_user es admin/entrenador
         nueva = gym_service.crear_clase(
             clase.nombre, clase.horario, clase.aforo, clase.entrenador_id
         )
-        # Preparamos la respuesta calculando plazas
-        resp = vars(nueva)
-        resp['plazas_disponibles'] = nueva.plazas_disponibles()
-        return resp
+        return ClaseResponse(
+            id=nueva.id,
+            nombre=nueva.nombre,
+            horario=nueva.horario,
+            aforo=nueva.aforo,
+            plazas_disponibles=nueva.plazas_disponibles()
+        )
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
 
 @app.get("/clases", response_model=List[ClaseResponse])
 def listar_clases():
-    """Listar clases es público."""
+    """
+    Listar clases es público. 
+    Añadimos robustez para saltar clases corruptas si el listado falla.
+    """
     res = []
     for c in gym_service.listar_clases():
-        # Usamos .copy() para no modificar el objeto original en memoria
-        d = vars(c).copy() 
-        # Calculamos el campo extra
-        d['plazas_disponibles'] = c.plazas_disponibles()
-        res.append(d)
+        try:
+            # Usamos .copy() para no modificar el objeto original en memoria
+            d = vars(c).copy() 
+            # Calculamos el campo extra
+            d['plazas_disponibles'] = c.plazas_disponibles()
+            res.append(d)
+        except Exception as e:
+            # Si una clase está corrupta (ej: falta un ID, o un valor es nulo),
+            # la omitimos para que el resto de clases sí aparezcan.
+            print(f"ERROR: Clase {getattr(c, 'id', 'desconocida')} corrupta. Omitiendo: {e}")
+            continue # Pasa a la siguiente clase
     return res
 
 @app.post("/reservas", status_code=201)
@@ -240,7 +251,6 @@ def asignar_rutina(rutina_id: str, current_user: Socio = Depends(get_current_use
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
     
-@app.post("/iot/sincronizar/{dispositivo_id}")
 @app.post("/iot/sincronizar/{dispositivo_id}")
 def sincronizar_dispositivo(dispositivo_id: str, current_user: Socio = Depends(get_current_user)):
     """

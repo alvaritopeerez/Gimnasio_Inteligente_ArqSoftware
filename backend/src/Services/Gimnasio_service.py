@@ -67,14 +67,18 @@ class GimnasioService:
     # =========== GESTIÓN DE CLASES ===========
 
     def crear_clase(self, nombre: str, horario: str, aforo: int, entrenador_id: str) -> Clase:
+        # 1. Validación de existencia del Entrenador (Mínima validación requerida)
         if entrenador_id not in self.entrenadores:
+            # Esta línea se mantiene para la seguridad básica
             raise ValueError("Error: entrenador no encontrado.")
 
+        # 2. Creación del objeto
         clase = Clase(nombre, horario, aforo, entrenador_id)
+        
+        # 3. PERSISTENCIA: Esta línea DEBE ser la única y la última antes del return.
         self.clases[clase.id] = clase
         
-        entrenador = self.entrenadores[entrenador_id]
-        entrenador.crear_clase(clase.id)
+        # Eliminamos cualquier otra referencia o llamada de función aquí.
         
         return clase
 

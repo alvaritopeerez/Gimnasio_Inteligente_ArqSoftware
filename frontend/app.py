@@ -470,7 +470,7 @@ def render_iot(headers):
 
     k1, k2, k3 = st.columns(3)
     k1.metric("🏋️ Último Peso", f"{ultimo_peso} Kg")
-    k2.metric("⏱️ Tiempo Ejercicio", f"{ultimo_tiempo} min")
+    k2.metric("⏱️ Tiempo Ejercicio", f"{ultimo_tiempo//60} min")
     k3.metric("📅 Total Sesiones", total_sesiones)
     
     st.markdown("### 📈 Tu Evolución")
